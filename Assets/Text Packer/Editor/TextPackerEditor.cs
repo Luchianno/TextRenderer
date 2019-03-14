@@ -10,12 +10,21 @@ public class TextPackerEditor : Editor
     {
         var textPacker = (TextPacker)target;
         base.OnInspectorGUI();
+        GUILayout.Label($"Debug: InProgress ={textPacker.InProgress}");
         GUI.enabled = !textPacker.InProgress;
-        if (GUILayout.Button(textPacker.InProgress ? "Generating..." : "Generate"))
+        if (GUILayout.Button(textPacker.InProgress ? $"Generating ({textPacker.Progress * 100:00}%)..." : "Generate"))
         {
             textPacker.Generate();
+
         }
-        // Update the serializedProperty - always do this in the beginning of OnInspectorGUI.
-        serializedObject.Update();
+        else
+        {
+            GUI.enabled = textPacker.InProgress;
+            if (GUILayout.Button("Stop"))
+                textPacker.StopGeneration();
+        }
+
+        if (textPacker.InProgress)
+            this.Repaint();
     }
 }
