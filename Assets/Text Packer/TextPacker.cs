@@ -92,14 +92,37 @@ public class TextPacker : MonoBehaviour
 
         Debug.Log("Textures Generated");
 
+        string extension = null;
+        switch (ImageFormat)
+        {
+            case ImageType.JPG:
+                extension = "jpg";
+                break;
+            case ImageType.PNG:
+                extension = "png";
+                break;
+        }
+
         if (SaveInSeparateImages)
         {
-            // foreach (var item in wordTextures)
-            // {
+            for (int i = 0; i < separated.Length; i++)
+            {
+                byte[] bytes = null;
+                switch (ImageFormat)
+                {
+                    case ImageType.JPG:
+                        bytes = wordTextures[i].EncodeToJPG();
+                        break;
+                    case ImageType.PNG:
+                        bytes = wordTextures[i].EncodeToPNG();
+                        break;
+                }
 
-            // }
-            Debug.LogError("Not Implemented");
-            yield break;
+                string fileName = $"TextAtlas{i:000000000}.{extension}";
+                File.WriteAllBytes(System.IO.Path.Combine(DestinationFolder, fileName), bytes);
+                this.texturesMetaData[i].Rect = new Rect(0, 0, wordTextures[i].width, wordTextures[i].height);
+                this.texturesMetaData[i].FileName = fileName;
+            }
         }
         else
         {
@@ -111,23 +134,14 @@ public class TextPacker : MonoBehaviour
             Debug.Log($"Textures packed ({packerTimer.ElapsedMilliseconds}ms)");
 
             byte[] bytes = null;
-            string extension = null;
             switch (ImageFormat)
             {
                 case ImageType.JPG:
                     bytes = atlas.EncodeToJPG();
-                    extension = "jpg";
                     break;
                 case ImageType.PNG:
                     bytes = atlas.EncodeToPNG();
-                    extension = "png";
                     break;
-                    // case ImageType.JPG:
-                    //     bytes = atlas.EncodeToJPG();
-                    //     break;
-                    // case ImageType.JPG:
-                    //     bytes = atlas.EncodeToJPG();
-                    //     break;
             }
 
             File.WriteAllBytes(System.IO.Path.Combine(DestinationFolder, $"TextAtlas.{extension}"), bytes);
@@ -135,17 +149,18 @@ public class TextPacker : MonoBehaviour
             for (int i = 0; i < rects.Length; i++)
             {
                 var temp = rects[i];
-                this.texturesMetaData[i].Rect = new Rect((int)(temp.x * atlas.width), 
-                                                        (int)(temp.y * atlas.height), 
-                                                        (int)(temp.width * atlas.width), 
+                this.texturesMetaData[i].Rect = new Rect((int)(temp.x * atlas.width),
+                                                        (int)(temp.y * atlas.height),
+                                                        (int)(temp.width * atlas.width),
                                                         (int)(temp.height * atlas.height));
                 this.texturesMetaData[i].FileName = $"TextAtlas.{extension}";
             }
 
-            var json = JsonUtility.ToJson(new MetaDataList(texturesMetaData), true);
-
-            File.WriteAllText(System.IO.Path.Combine(DestinationFolder, $"MetaData.txt"), json);
         }
+        var json = JsonUtility.ToJson(new MetaDataList(texturesMetaData), true);
+
+        File.WriteAllText(System.IO.Path.Combine(DestinationFolder, $"MetaData.json"), json);
+
         InProgress = false;
         timer.Stop();
         Debug.Log($"Time Elapsed {timer.ElapsedMilliseconds}ms");

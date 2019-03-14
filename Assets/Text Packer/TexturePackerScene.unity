@@ -284,7 +284,17 @@ PrefabInstance:
     - target: {fileID: 4513121644953235688, guid: 3c0969b0cb4e60a49adeef4dbefce1f1,
         type: 3}
       propertyPath: InputTextPath
-      value: C:\Users\Luka Tsulaia\Desktop\foo1.txt
+      value: C:\Users\Luka Tsulaia\Desktop\foo.txt
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513121644953235688, guid: 3c0969b0cb4e60a49adeef4dbefce1f1,
+        type: 3}
+      propertyPath: DestinationFolder
+      value: C:\Users\Luka Tsulaia\Desktop\TexturePackerTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 4513121644953235688, guid: 3c0969b0cb4e60a49adeef4dbefce1f1,
+        type: 3}
+      propertyPath: SaveInSeparateImages
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c0969b0cb4e60a49adeef4dbefce1f1, type: 3}
